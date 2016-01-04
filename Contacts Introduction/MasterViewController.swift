@@ -8,8 +8,9 @@
 
 import UIKit
 import Contacts
+import ContactsUI
 
-class MasterViewController: UITableViewController {
+class MasterViewController: UITableViewController, CNContactPickerDelegate {
 
     var detailViewController: DetailViewController? = nil
     var objects = [CNContact]()
@@ -17,7 +18,8 @@ class MasterViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        self.navigationItem.leftBarButtonItem = self.editButtonItem()
+        let addExisting = UIBarButtonItem(title: "Add Existing", style: .Plain, target: self, action: "addExistingContact")
+        self.navigationItem.leftBarButtonItem = addExisting
 
         if let split = self.splitViewController {
             let controllers = split.viewControllers
@@ -29,9 +31,46 @@ class MasterViewController: UITableViewController {
     }
     
     func getContacts() {
+        let store = CNContactStore()
         
+        if CNContactStore.authorizationStatusForEntityType(.Contacts) == .NotDetermined {
+            store.requestAccessForEntityType(.Contacts, completionHandler: { (authorized: Bool, error: NSError?) -> Void in
+                if authorized {
+                    self.retrieveContactsWithStore(store)
+                }
+            })
+        } else if CNContactStore.authorizationStatusForEntityType(.Contacts) == .Authorized {
+            self.retrieveContactsWithStore(store)
+        }
     }
 
+    func retrieveContactsWithStore(store: CNContactStore) {
+        do {
+            let groups = try store.groupsMatchingPredicate(nil)
+            let predicate = CNContact.predicateForContactsInGroupWithIdentifier(groups[0].identifier)
+            //let predicate = CNContact.predicateForContactsMatchingName("John")
+            let keysToFetch = [CNContactFormatter.descriptorForRequiredKeysForStyle(.FullName), CNContactEmailAddressesKey]
+            
+            let contacts = try store.unifiedContactsMatchingPredicate(predicate, keysToFetch: keysToFetch)
+            self.objects = contacts
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                self.tableView.reloadData()
+            })
+        } catch {
+            print(error)
+        }
+    }
+    
+    func addExistingContact() {
+        let contactPicker = CNContactPickerViewController()
+        contactPicker.delegate = self
+        self.presentViewController(contactPicker, animated: true, completion: nil)
+    }
+    
+    func contactPicker(picker: CNContactPickerViewController, didSelectContact contact: CNContact) {
+        NSNotificationCenter.defaultCenter().postNotificationName("addNewContact", object: nil, userInfo: ["contactToAdd": contact])
+    }
+    
     override func viewWillAppear(animated: Bool) {
         self.clearsSelectionOnViewWillAppear = self.splitViewController!.collapsed
         super.viewWillAppear(animated)
@@ -77,18 +116,18 @@ class MasterViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
         
+        let contact = self.objects[indexPath.row]
+        let formatter = CNContactFormatter()
+        
+        cell.textLabel?.text = formatter.stringFromContact(contact)
+        cell.detailTextLabel?.text = contact.emailAddresses.first?.value as? String
+        
         return cell
     }
 
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
-        return true
-    }
-
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            
-        }
+        return false
     }
 }
 

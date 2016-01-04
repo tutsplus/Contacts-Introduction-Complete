@@ -26,8 +26,35 @@ class DetailViewController: UIViewController {
 
     func configureView() {
         // Update the user interface for the detail item.
-        if let contact = self.contactItem {
+        if let oldContact = self.contactItem {
+            let store = CNContactStore()
             
+            do {
+                let keysToFetch = [CNContactFormatter.descriptorForRequiredKeysForStyle(.FullName), CNContactEmailAddressesKey, CNContactPostalAddressesKey, CNContactImageDataKey, CNContactImageDataAvailableKey]
+                let contact = try store.unifiedContactWithIdentifier(oldContact.identifier, keysToFetch: keysToFetch)
+                
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    if contact.imageDataAvailable {
+                        if let data = contact.imageData {
+                            self.contactImage.image = UIImage(data: data)
+                        }
+                    }
+                    
+                    self.fullName.text = CNContactFormatter().stringFromContact(contact)
+                    
+                    self.email.text = contact.emailAddresses.first?.value as? String
+                    
+                    if contact.isKeyAvailable(CNContactPostalAddressesKey) {
+                        if let postalAddress = contact.postalAddresses.first?.value as? CNPostalAddress {
+                            self.address.text = CNPostalAddressFormatter().stringFromPostalAddress(postalAddress)
+                        } else {
+                            self.address.text = "No Address"
+                        }
+                    }
+                })
+            } catch {
+                print(error)
+            }
         }
     }
 
