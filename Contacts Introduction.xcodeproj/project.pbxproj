@@ -13,6 +13,7 @@
 		60A3199A1C378363000F6392 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 60A319981C378363000F6392 /* Main.storyboard */; };
 		60A3199C1C378363000F6392 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 60A3199B1C378363000F6392 /* Assets.xcassets */; };
 		60A3199F1C378363000F6392 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 60A3199D1C378363000F6392 /* LaunchScreen.storyboard */; };
+		60DA42281C3A0097000031CD /* AddContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60DA42271C3A0097000031CD /* AddContactViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		60A3199B1C378363000F6392 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		60A3199E1C378363000F6392 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		60A319A01C378363000F6392 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		60DA42271C3A0097000031CD /* AddContactViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddContactViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 				60A319921C378363000F6392 /* AppDelegate.swift */,
 				60A319941C378363000F6392 /* MasterViewController.swift */,
 				60A319961C378363000F6392 /* DetailViewController.swift */,
+				60DA42271C3A0097000031CD /* AddContactViewController.swift */,
 				60A319981C378363000F6392 /* Main.storyboard */,
 				60A3199B1C378363000F6392 /* Assets.xcassets */,
 				60A3199D1C378363000F6392 /* LaunchScreen.storyboard */,
@@ -139,6 +142,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				60A319971C378363000F6392 /* DetailViewController.swift in Sources */,
+				60DA42281C3A0097000031CD /* AddContactViewController.swift in Sources */,
 				60A319951C378363000F6392 /* MasterViewController.swift in Sources */,
 				60A319931C378363000F6392 /* AppDelegate.swift in Sources */,
 			);
