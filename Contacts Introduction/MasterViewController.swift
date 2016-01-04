@@ -25,6 +25,11 @@ class MasterViewController: UITableViewController {
         }
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "insertNewObject:", name: "addNewContact", object: nil)
+        self.getContacts()
+    }
+    
+    func getContacts() {
+        
     }
 
     override func viewWillAppear(animated: Bool) {
